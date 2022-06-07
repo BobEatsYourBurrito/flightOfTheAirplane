@@ -1,27 +1,39 @@
 class Particle {
-  constructor(origin){
-    this.pos = origin;
-    this.vel = createVector(0,0,2);
+  constructor(origin) {
+    this.pos = origin.copy();
+    this.vel = createVector(0, 0, 0);
     this.acc = createVector();
-    this.lifeSpan = 255;
+    this.lifespan = 255;
+    this.heat = random(200, 255);
+    this.gravity = createVector(0, 0.25, 0);
   }
-  update(){
-    this.vel.add(this.acc);
-    this.pos.add(this.vel);
-    this.vel.limit(5);
-    this.acc.mult(0);
-    this.lifeSpan -= 2;
 
-  }
-  render(){
-    push();
+  render() {
+    push()
+    translate(this.pos);
     noStroke();
-    fill(255,100, 0, this.lifeSpan);
-    translate(this.pos.x,this.pos.y - 100,this.pos.z + 50);
-    sphere(2);
+    fill(255, 90, 10, this.lifespan);
+    sphere(3);
     pop();
   }
-  applyForce(force){
-    this.acc.add(force);
+
+  update() {
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+    this.lifespan -= 10;
+    this.heat -= 3
+
+    this.acc.add(this.gravity);
+  }
+
+  isDead() {
+    if(this.lifespan < 0) {
+      return true;
+    } else {return false}
+  }
+
+  applyForce(force) {
+    this.acc.add(force)
   }
 }
