@@ -1,18 +1,24 @@
-let plane, origin, ps, ps1, prevH, ring, p, score;
+let plane1, origin, ps, ps1, prevH, ring, p, score, lamaine;
 let w;
 let xoff = 0;
 let zoff = 0;
 let trail = [];
 let saturation = 100;
 let materialColor = 210;
+let font;
 
-function preload(){}
+
+function preload(){
+  font = loadFont('OpenSans-Regular.ttf');
+  lamaine = loadImage('lamaine.jpg');
+
+}
 
 function setup() {
   createCanvas(600,600,WEBGL);
   colorMode(HSB,360,100,100,255);
-  plane = new Plane();
-  origin = plane.pos.copy();
+  plane1 = new Plane();
+  origin = plane1.pos.copy();
   origin.y -= 100;
   origin.z -= 45;
   origin.x -= 20;
@@ -22,22 +28,34 @@ function setup() {
   w = 35;
   ring = new Ring();
 
+
 }
 
 
 function draw() {
   background(180,70,100);
+  push();
+  textSize(36);
+  textFont(font);
+  fill(0);
+  text(score, -270, -250);
+  pop();
   score = ring.score;
-  orbitControl();
+  //pointLight(60,100,100, 0,300, -800);
   ambientLight(0,0,360);
+  orbitControl();
+
   push();
   noStroke();
-  ambientMaterial(40,100,100);
+  ambientMaterial(40,40,100);
+  //texture(lamaine);
   translate(0,0, -1200);
-  sphere(100);
+  sphere(200);
+  //plane(500,900);
   pop();
 
-  text(score);
+
+  //text(score);
   rotateX(radians(-10))
   for(let z = 200; z > -700; z-= 35){
     let waveStrength = map(z, 200, -500, 2,3)
@@ -74,25 +92,25 @@ function draw() {
 
 
   if(keyIsDown('68')){
-    plane.acc.x += 0.18;
-    plane.bankAngleZ += 1.8;
+    plane1.acc.x += 0.18;
+    plane1.bankAngleZ += 1.8;
   }else if(keyIsDown('65')){
-    plane.acc.x -= 0.18;
-    plane.bankAngleZ -= 1.8;
+    plane1.acc.x -= 0.18;
+    plane1.bankAngleZ -= 1.8;
   } if(keyIsDown('83')) {
-    plane.acc.y -= 0.15;
-    plane.bankAngleX -= 1.5;
+    plane1.acc.y -= 0.15;
+    plane1.bankAngleX -= 1.5;
   } else if(keyIsDown('87')) {
-    plane.acc.y += 0.15;
-    plane.bankAngleX += 1.5;
-  } else if(plane.bankAngleZ > 0 || plane.bankAngleZ < 0){
-    plane.bankAngleZ *= 0.95;
-  } if(plane.bankAngleX > 0 || plane.bankAngleX < 0){
-    plane.bankAngleX *= 0.95;
+    plane1.acc.y += 0.15;
+    plane1.bankAngleX += 1.5;
+  } else if(plane1.bankAngleZ > 0 || plane1.bankAngleZ < 0){
+    plane1.bankAngleZ *= 0.95;
+  } if(plane1.bankAngleX > 0 || plane1.bankAngleX < 0){
+    plane1.bankAngleX *= 0.95;
   }
   push();
-  plane.update();
-  plane.render();
+  plane1.update();
+  plane1.render();
 
   //trail.run(plane.pos);
 
@@ -103,7 +121,7 @@ function draw() {
   pop();
 
 
-  ring.update(plane);
+  ring.update(plane1);
   ring.render();
 
 }
