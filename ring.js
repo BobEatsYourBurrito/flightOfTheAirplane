@@ -9,18 +9,18 @@ class Ring {
   update(plane){
     this.pos.add(this.vel);
 
-    if(this.pos.z > 300){
+    if(this.pos.z > 500){
       this.pos.z = -1000;
       this.pos.x = random(-this.randomX,this.randomX);
       this.pointCheck = 0;
       this.vel.z += 0.1;
     }
 
-    if(this.pos.dist(plane.pos) < 20 && this.pointCheck === 0){
+    if(this.pos.dist(plane.pos) < 30 && this.pointCheck === 0){
       this.score ++;
       this.pointCheck ++;
     }
-    console.log(this.score);
+    // console.log(this.score);
   }
   render(){
     push();
