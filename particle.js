@@ -12,7 +12,7 @@ class Particle {
     push()
     translate(this.pos);
     noStroke();
-    fill(255, this.lifespan);
+    fill(0,0,100, this.lifespan);
     sphere(2);
     pop();
   }

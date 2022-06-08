@@ -18,14 +18,14 @@ class Plane {
   }
   render() {
     stroke(0);
-    ambientMaterial(255);
+    ambientMaterial(180,0,360);
     translate(this.pos.x, this.pos.y,this.pos.z);
     push();
     strokeWeight(2);
     rotateZ(this.propSpeed);
     line(0, 0 - 10, 0, 0 + 10);
     pop();
-    
+
     beginShape();
     rotateX(radians(this.bankAngleX));
     rotateZ(radians(this.bankAngleZ));
