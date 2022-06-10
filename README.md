@@ -1,2 +1,2 @@
 # flightOfTheAirplane
-link https://rawcdn.githack.com/BobEatsYourBurrito/flightOfTheAirplane/69bbec5aa3dee9877073fa4ba72a8a310575cc0f/index.html
+link https://rawcdn.githack.com/BobEatsYourBurrito/flightOfTheAirplane/b626399f611faebe18355cbb290ecba32e23fb79/index.html

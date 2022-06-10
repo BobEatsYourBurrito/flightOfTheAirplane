@@ -9,9 +9,9 @@ class Ring {
   update(plane){
     this.pos.add(this.vel);
 
-    if(this.pos.z > 500){
-      this.pos.z = -1000;
-      this.pos.x = random(-this.randomX,this.randomX);
+    if(this.pos.z > 600){
+      this.pos = createVector(random(-this.randomX,this.randomX),random(-75, -200),-1500);
+
       this.pointCheck = 0;
       this.vel.z += 0.1;
     }
@@ -26,7 +26,8 @@ class Ring {
     push();
     noStroke();
     translate(this.pos)
-    ambientMaterial(140,100,70);
+    //ambientMaterial(140,100,70);
+    fill(140,100,70);
     torus(50, 10);
     pop();
   }

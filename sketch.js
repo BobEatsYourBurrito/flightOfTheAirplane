@@ -1,11 +1,12 @@
-let plane1, origin, ps, ps1, prevH, ring, p, score, lamaine;
+let plane1, origin, ps, ps1, prevH, ring, p, score, lamaine, waveWidth,skyBox;
 let w;
 let xoff = 0;
-let zoff = 0;
+let waveInc = 0;
 let trail = [];
 let saturation = 100;
 let materialColor = 210;
 let font;
+
 
 
 function preload(){
@@ -15,39 +16,47 @@ function preload(){
 }
 
 function setup() {
-  createCanvas(600,600,WEBGL);
+  createCanvas(windowWidth,windowHeight,WEBGL);
   colorMode(HSB,360,100,100,255);
   plane1 = new Plane();
   origin = plane1.pos.copy();
   origin.y -= 100;
-  origin.z -= 45;
+  origin.z -= 0;
   origin.x -= 20;
   ps = new ParticleSystem(origin);
   origin.x += 40;
   ps1 = new ParticleSystem(origin);
   w = 35;
   ring = new Ring();
-
+  waveWidth = 500;
+  skyBox = new SkyBox(3000);
 
 }
 
 
 function draw() {
-  background(180,70,100);
+  background(200,70,100);
+  translate(0,0,250);
+
+  skyBox.render();
+
   push();
-  textSize(36);
+  translate(200, 0, -1000);
+  textSize(50);
   textFont(font);
   fill(0);
-  text(score, -270, -250);
+  text(score, 0,0);
   pop();
   score = ring.score;
   //pointLight(60,100,100, 0,300, -800);
   ambientLight(0,0,360);
+
   orbitControl();
 
   push();
   noStroke();
   ambientMaterial(40,40,100);
+
   //texture(lamaine);
   translate(0,0, -1200);
   sphere(200);
@@ -59,9 +68,9 @@ function draw() {
   rotateX(radians(-10))
   for(let z = 200; z > -700; z-= 35){
     let waveStrength = map(z, 200, -500, 2,3)
-    for(let x = -width / 1.5 ;x < width / 1.5; x+= 35){
+    for(let x = -waveWidth ;x < waveWidth; x+= 35){
       push();
-      let d = dist(0, 300, x,z);
+      let d = dist(map(noise(waveInc),-1,1,-150,150,), 350, x,z);
       let maxH = map(d,0,300,100,120)
       let offset = map(d, 0, 200, waveStrength, -waveStrength);
       // let h = map(sin(-xoff + zoff),-1,1,20,100);
@@ -79,8 +88,9 @@ function draw() {
       //   h = 100;
       //   materialColor = 40;
       // } else {materialColor = 210}
-
-      ambientMaterial(materialColor,saturation,darkness);
+      ambientLight(0,0,80);
+      specularMaterial(materialColor,saturation,darkness);
+      shininess(50);
       translate(x,250,z - 50);
       box(w,(h - b + b1),w);
       prevH = h;
@@ -89,6 +99,7 @@ function draw() {
   }
 
   xoff += 0.05;
+  waveInc += 0.001
 
 
   if(keyIsDown('68')){
@@ -112,6 +123,8 @@ function draw() {
   plane1.update();
   plane1.render();
 
+  // if(mouseIsPressed){
+  // plane1.mouseInput();}
   //trail.run(plane.pos);
 
   ps.addParticle(2)
