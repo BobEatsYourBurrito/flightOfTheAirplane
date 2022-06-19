@@ -1,4 +1,4 @@
-let plane1, origin, ps, ps1, prevH, ring, p, score, lamaine, waveWidth,skyBox;
+let plane1, origin, ps, ps1, prevH, ring, p, score, lamaine, waveWidth,skyBox, hotStreak;
 let w;
 let xoff = 0;
 let waveInc = 0;
@@ -39,15 +39,29 @@ function draw() {
   translate(0,0,250);
 
   skyBox.render();
-
+  //point Counter
   push();
   translate(200, 0, -1000);
   textSize(50);
   textFont(font);
   fill(0);
-  text(score, 0,0);
-  pop();
   score = ring.score;
+  text(score, 0,0);
+  translate(-50,-100,0);
+  text('Score', 0, 0);
+  pop();
+
+  //hotStreakCounter
+  push();
+  textSize(50);
+  textFont(font);
+  fill(0);
+  translate(-400, -100, -1000);
+  text('HotStreaks', 0, 0);
+  hotStreak = ring.hotStreak;
+  translate(150, 100, 0);
+  text(hotStreak, 0, 0);
+  pop();
   //pointLight(60,100,100, 0,300, -800);
   ambientLight(0,0,360);
 
@@ -56,7 +70,6 @@ function draw() {
   push();
   noStroke();
   ambientMaterial(40,40,100);
-
   //texture(lamaine);
   translate(0,0, -1200);
   sphere(200);

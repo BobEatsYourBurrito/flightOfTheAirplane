@@ -2,22 +2,27 @@ class Ring {
   constructor() {
     this.randomX = 200;
     this.pos = createVector(random(-this.randomX,this.randomX), -120,-800);
-    this.vel = createVector(0,0, 5);
+    this.vel = createVector(0,0, 5 );
     this.score = 0;
     this.pointCheck = 0;
+    this.hotStreak = 0;
   }
   update(plane){
     this.pos.add(this.vel);
 
     if(this.pos.z > 600){
       this.pos = createVector(random(-this.randomX,this.randomX),random(-75, -200),-1500);
-
+      if(this.pointCheck == 0) {
+        this.hotStreak = 0;
+      }else if (this.pointCheck == 1) {
       this.pointCheck = 0;
       this.vel.z += 0.1;
+      }
     }
 
     if(this.pos.dist(plane.pos) < 30 && this.pointCheck === 0){
       this.score ++;
+      this.hotStreak += 1;
       this.pointCheck ++;
     }
     // console.log(this.score);
