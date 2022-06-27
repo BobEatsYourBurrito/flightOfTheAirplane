@@ -58,7 +58,7 @@ function draw() {
 
   //Instructions || controls
   push();
-  translate(-width + 150, -height + 150, -1000);
+  translate(-width + 0, -height + 50, -1000);
   textSize(50);
   textFont(font);
   fill(0);
@@ -88,7 +88,7 @@ function draw() {
   textSize(40);
   textFont(font);
   fill(0,100,0);
-  translate(width/2 - 300,  -height + 150, -600);
+  translate(width/2 - 300,  -height + 250, -600);
   text('Your HighScore and HotScore',0,0);
   textSize(60);
   fill(180,100,100);
