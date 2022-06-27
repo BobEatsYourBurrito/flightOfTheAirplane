@@ -1,6 +1,6 @@
 class Plane {
   constructor() {
-    this.pos = createVector(0,100,50);
+    this.pos = createVector(0,100,100);
     this.vel = createVector();
     this.acc = createVector();
     this.maxSpeed = 4;
@@ -37,5 +37,4 @@ class Plane {
     vertex(0,0,50);
     endShape();
   }
-
 }
