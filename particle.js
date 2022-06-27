@@ -5,7 +5,7 @@ class Particle {
     this.acc = createVector();
     this.lifespan = 255;
     this.heat = random(200, 255);
-    this.gravity = createVector(0, 0.25, 0);
+    //this.gravity = createVector(0, 0.25, 0);
   }
 
   render() {
