@@ -1,4 +1,3 @@
 # flightOfTheAirplane
-link https://rawcdn.githack.com/BobEatsYourBurrito/flightOfTheAirplane/82cda0831b9acf38ea868601936f23d282a6ea1c/index.html
-
+link: https://rawcdn.githack.com/BobEatsYourBurrito/flightOfTheAirplane/0313cb43375cb22a0f75baebaee68431a1b7c9eb/index.html;
 ideas: collision, obsticles, hotstreaks and multipliers, more controls, list controls, menu, highscore system maybe;
