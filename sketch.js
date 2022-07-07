@@ -23,7 +23,7 @@ let usedRotation = 0;
 
 function preload() {
   font = loadFont("OpenSans-Regular.ttf");
-  lamaine = loadImage("wilison.jpg");
+  //lamaine = loadImage("wilison.jpg");
 }
 
 function setup() {
