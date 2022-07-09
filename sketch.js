@@ -65,7 +65,7 @@ function draw() {
 
   //Instructions || controls
   push();
-  translate(-width + 0, -height + 50, -1000);
+  translate(-width + 50, -height + 50, -1000);
   textSize(50);
   textFont(font);
   fill(0);
