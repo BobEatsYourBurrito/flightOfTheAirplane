@@ -233,6 +233,7 @@ function draw() {
       plane1.render();
       ring.score = 0;
       planeHitWater -= 1;
+      plane1.highScoreColorScroll = 0;
     }
   }
 }
