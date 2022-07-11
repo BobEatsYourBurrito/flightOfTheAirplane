@@ -4,9 +4,13 @@ class Plane {
     this.vel = createVector();
     this.acc = createVector();
     this.maxSpeed = 4;
+    this.bankAngleVelX = 0;
+    this.bankAngleVelZ = 0;
+    this.bankAngleVelShowZ = this.bankAngleVelZ / 1.05;
     this.bankAngleZ = 0;
     this.bankAngleX = 0;
     this.propSpeed = 0;
+    this.velDampening = 0.95;
     let color = 0;
     this.highScoreColorScroll = 0;
   }
@@ -15,8 +19,13 @@ class Plane {
     this.pos.add(this.vel);
     this.vel.limit(this.maxSpeed);
     this.acc.mult(0);
-    this.vel.mult(0.95);
+    this.vel.mult(this.velDampening);
     this.propSpeed += 1;
+    this.bankAngleVelX += this.bankAngleX;
+    this.bankAngleVelZ += this.bankAngleZ;
+    this.bankAngleX *= 0;
+    this.bankAngleZ *= 0;
+
     constrain(this.pos.x, -width / 2, width / 2);
   }
   render() {
@@ -24,8 +33,8 @@ class Plane {
     ambientMaterial(map(color, 0, 100, 0, 360), this.highScoreColorScroll, 100);
     let constrainedXPos = constrain(
       this.pos.x,
-      -windowWidth / 5,
-      windowWidth / 5.5
+      -windowWidth / 4,
+      windowWidth / 4
     );
     let constrainedYPos = constrain(
       this.pos.y,
@@ -43,8 +52,8 @@ class Plane {
     pop();
 
     beginShape();
-    rotateX(radians(this.bankAngleX));
-    rotateZ(radians(this.bankAngleZ));
+    rotateX(radians(this.bankAngleVelX));
+    rotateZ(radians(this.bankAngleVelZ));
     vertex(0, 0, 0);
     vertex(20, 0, 50);
     vertex(-20, 0, 50);

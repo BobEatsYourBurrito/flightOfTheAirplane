@@ -18,7 +18,7 @@ class Ring {
   }
   update(plane) {
     this.pos.add(this.vel);
-    this.vel.limit(16);
+    this.vel.limit(12);
     if (this.pos.z > 600) {
       this.pos = createVector(
         random(-this.randomX, this.randomX),
@@ -29,12 +29,24 @@ class Ring {
         this.hotStreak = 0;
       } else if (this.pointCheck == 1) {
         this.pointCheck = 0;
-        this.acc += 0.025;
+        this.acc += 0.05;
         this.vel.z += this.acc;
       }
     }
 
-    if (this.pos.dist(plane.pos) < 30 && this.pointCheck === 0) {
+    //difference between ring center and plane1 one x and y axis
+    let distInX = sqrt(
+      (this.pos.x - plane1.pos.x) * (this.pos.x - plane1.pos.x)
+    );
+    let distInY = sqrt(
+      (this.pos.y - plane1.pos.y) * (this.pos.y - plane1.pos.y)
+    );
+    let distInZ = sqrt(
+      (this.pos.z - plane1.pos.z) * (this.pos.z - plane1.pos.z)
+    );
+
+    // console.log(distInX, distInY, distInZ);
+    if (distInY < 45 && distInX < 45 && distInZ < 5 && this.pointCheck === 0) {
       this.score++;
       this.hotStreak += 1;
       this.pointCheck++;
@@ -49,14 +61,14 @@ class Ring {
       this.recordHotStreak = this.hotStreak;
       storeItem("this.recordHotStreak", this.recordHotStreak);
     }
-    console.log(this.hotStreak);
+    // console.log(this.hotStreak);
   }
   render() {
     push();
     noStroke();
     translate(this.pos);
-    //ambientMaterial(140,100,70);
-    fill(140, 100, 70);
+    //ambientMaterial(180, 100, 70);
+    fill(180, 100, 80);
     torus(50, 10);
     pop();
   }

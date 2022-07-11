@@ -10,7 +10,14 @@ let plane1,
   waveWidth,
   skyBox,
   hotStreak,
-  spawn;
+  spawn,
+  povPosition,
+  cameraRotationsX,
+  cameraRotationsZ,
+  waveDistance,
+  showControls,
+  cameraMvntSpdX,
+  cameraMvntSpdY;
 let w;
 let xoff = 0;
 let waveInc = 0;
@@ -20,6 +27,7 @@ let materialColor = 210;
 let font;
 let planeHitWater = 0;
 let usedRotation = 0;
+let cameraX, cameraY, cameraZ;
 
 function preload() {
   font = loadFont("OpenSans-Regular.ttf");
@@ -43,13 +51,55 @@ function setup() {
   waveWidth = 500;
   skyBox = new SkyBox(3000);
   noiseDetail(8);
+
+  callCameraSetup();
 }
 
 function draw() {
   background(200, 70, 100);
-  translate(0, 0, 250);
+  updateCamera();
+  //console.log(cameraX,cameraY,cameraZ);
+  translate(cameraX, cameraY, cameraZ);
 
   skyBox.render();
+
+  //pointLight(60,100,100, 0,300, -800);
+  ambientLight(0, 0, 360);
+
+  rotateX(radians(cameraRotationsX));
+  rotateZ(radians(cameraRotationsZ));
+
+  //HighScore counter
+  push();
+  textSize(40);
+  textFont(font);
+  fill(0, 100, 0);
+  translate(width / 2 - 300, -height + height / 2.5, -1000);
+  text("Your HighScore and HotScore", 0, 0);
+  textSize(60);
+  fill(180, 100, 100);
+  text(ring.highScore, 175, 75);
+  text(ring.recordHotStreak, 420, 75);
+  pop();
+
+  //Instructions || controls
+  if (showControls == 1) {
+    push();
+    translate(-width + 50, -height + height / 5, -1400);
+    textSize(50);
+    textFont(font);
+    fill(0);
+    text("Controls:", 0, 0);
+    textSize(40);
+    translate(0, 50, 0);
+    text("WASD for normal movement", 0, 0);
+    text("Q & E for Rotational Movement", 0, 40);
+    text("To reset the page press Ctrl + R", 0, 80);
+    text("To look around the scene use your MOUSE buttons", 0, 120);
+    text("Use R to switch into diffent point of views", 0, 160);
+    text("Press C to hide and show the controls", 0, 200);
+    pop();
+  }
 
   //point Counter
   push();
@@ -61,21 +111,6 @@ function draw() {
   text(score, 0, 0);
   translate(-50, -100, 0);
   text("Score", 0, 0);
-  pop();
-
-  //Instructions || controls
-  push();
-  translate(-width + 50, -height + 50, -1000);
-  textSize(50);
-  textFont(font);
-  fill(0);
-  text("Controls:", 0, 0);
-  textSize(40);
-  translate(0, 50, 0);
-  text("WASD for normal movement", 0, 0);
-  text("Q & E for Rotational Movement", 0, 40);
-  text("To reset the page press Ctrl + R", 0, 80);
-  text("To look around the scene use your MOUSE buttons", 0, 120);
   pop();
 
   //hotStreakCounter
@@ -90,23 +125,7 @@ function draw() {
   text(hotStreak, 0, 0);
   pop();
 
-  //HighScore counter
-  push();
-  textSize(40);
-  textFont(font);
-  fill(0, 100, 0);
-  translate(width / 2 - 300, -height + 250, -600);
-  text("Your HighScore and HotScore", 0, 0);
-  textSize(60);
-  fill(180, 100, 100);
-  text(ring.highScore, 175, 75);
-  text(ring.recordHotStreak, 420, 75);
-  pop();
-
-  //pointLight(60,100,100, 0,300, -800);
-  ambientLight(0, 0, 360);
-
-  orbitControl();
+  //orbitControl();
 
   push();
   noStroke();
@@ -118,8 +137,10 @@ function draw() {
   pop();
 
   //text(score);
-  rotateX(radians(-10));
-  for (let z = 200; z > -700; z -= 35) {
+
+  rotateY(radians(-cameraRotationsZ * 0.006));
+
+  for (let z = waveDistance + 200; z > waveDistance - 700; z -= 35) {
     let waveStrength = map(z, 200, -500, 2, 3);
 
     for (let x = -waveWidth; x < waveWidth; x += 35) {
@@ -165,19 +186,19 @@ function draw() {
     waveInc += 0.001;
 
     if (keyIsDown("68")) {
-      plane1.acc.x += 0.15;
+      plane1.acc.x += cameraMvntSpdX;
       plane1.bankAngleZ += 2.2;
       usedRotation = 0;
     } else if (keyIsDown("65")) {
-      plane1.acc.x -= 0.15;
+      plane1.acc.x -= cameraMvntSpdX;
       plane1.bankAngleZ -= 2.2;
       usedRotation = 0;
     }
     if (keyIsDown("83")) {
-      plane1.acc.y -= 0.15;
+      plane1.acc.y -= cameraMvntSpdY;
       plane1.bankAngleX -= 1.7;
     } else if (keyIsDown("87")) {
-      plane1.acc.y += 0.15;
+      plane1.acc.y += cameraMvntSpdY;
       plane1.bankAngleX += 1.7;
     }
     if (keyIsDown("69")) {
@@ -188,46 +209,54 @@ function draw() {
       usedRotation = 1;
     }
     if (
-      (plane1.bankAngleZ > 0 && usedRotation === 0) ||
-      (plane1.bankAngleZ < 0 && usedRotation === 0)
+      (plane1.bankAngleVelZ > 0 && usedRotation === 0) ||
+      (plane1.bankAngleVelZ < 0 && usedRotation === 0)
     ) {
-      plane1.bankAngleZ *= 0.95;
+      plane1.bankAngleVelZ *= 0.95;
     } else {
-      plane1.bankAngleZ *= 0.99;
+      plane1.bankAngleVelZ *= 0.99;
     }
-    if (plane1.bankAngleX > 0 || plane1.bankAngleX < 0) {
-      plane1.bankAngleX *= 0.95;
+    if (plane1.bankAngleVelX > 0 || plane1.bankAngleVelX < 0) {
+      plane1.bankAngleVelX *= 0.95;
     }
-    push();
+
     plane1.update();
-    plane1.render();
 
-    // if(mouseIsPressed){
-    // plane1.mouseInput();}
-    //trail.run(plane.pos);
+    if (!hidePlane) {
+      push();
 
-    ps.addParticle(2);
-    ps.run();
-    ps1.addParticle(2);
-    ps1.run();
-    pop();
+      plane1.render();
+
+      // if(mouseIsPressed){
+      // plane1.mouseInput();}
+      //trail.run(plane.pos);
+
+      ps.addParticle(2);
+      ps.run();
+      ps1.addParticle(2);
+      ps1.run();
+      pop();
+    }
 
     ring.update(plane1);
     ring.render();
   } else if (planeHitWater == 1) {
+    plane1.pos.y = -50;
+
     push();
+    rotateX(radians(-cameraRotationsX / 2));
+    rotateZ(radians(-cameraRotationsZ / 2));
     fill(180, 100, 100);
-    translate(-450, -100, -300);
+    translate(plane1.pos.x - 450, plane1.pos.y + 100, plane1.pos.z - 400);
     textFont(font);
     textSize(150);
-    text("YouCrashed!", 0, 0);
+    text("You Crashed!", 0, 0);
     textSize(40);
     fill(0, 100, 0);
     text("Press SPACE to try again!", 200, 50);
     pop();
 
     if (keyIsDown("32")) {
-      plane1.pos.y -= 200;
       plane1.vel.mult(0);
       plane1.update();
       plane1.render();
@@ -235,6 +264,17 @@ function draw() {
       planeHitWater -= 1;
       plane1.highScoreColorScroll = 0;
     }
+  }
+}
+
+function keyReleased() {
+  if (keyCode === 82) {
+    povPosition++;
+  }
+  if (keyCode === 67 && showControls < 1) {
+    showControls++;
+  } else if (keyCode === 67) {
+    showControls = 0;
   }
 }
 
