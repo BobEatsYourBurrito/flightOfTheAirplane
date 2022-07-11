@@ -29,7 +29,7 @@ function updateCamera() {
     cameraX = -plane1.pos.x;
     cameraY = -plane1.pos.y;
     cameraZ = plane1.pos.z + 350;
-    cameraRotationsX = -plane1.bankAngleVelX / 5;
+    cameraRotationsX = -plane1.bankAngleVelX / 3.5;
     cameraRotationsZ = 0;
     hidePlane = false;
     waveDistance = 0;
