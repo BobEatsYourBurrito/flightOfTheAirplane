@@ -51,16 +51,18 @@ class Plane {
     line(0, 0 - 10, 0, 0 + 10);
     pop();
 
-    beginShape();
-    rotateX(radians(this.bankAngleVelX));
-    rotateZ(radians(this.bankAngleVelZ));
-    vertex(0, 0, 0);
-    vertex(20, 0, 50);
-    vertex(-20, 0, 50);
-    vertex(0, 0, 0);
-    vertex(0, 10, 50);
-    vertex(0, 0, 50);
-    endShape();
+    if (!hidePlane) {
+      beginShape();
+      rotateX(radians(this.bankAngleVelX));
+      rotateZ(radians(this.bankAngleVelZ));
+      vertex(0, 0, 0);
+      vertex(20, 0, 50);
+      vertex(-20, 0, 50);
+      vertex(0, 0, 0);
+      vertex(0, 10, 50);
+      vertex(0, 0, 50);
+      endShape();
+    }
     if (color <= 100) {
       color += 0.5;
     } else {

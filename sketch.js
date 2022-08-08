@@ -17,7 +17,9 @@ let plane1,
   waveDistance,
   showControls,
   cameraMvntSpdX,
-  cameraMvntSpdY;
+  cameraMvntSpdY,
+  airplaneNoisesInFlight,
+  playerCtrlDistToCamera = 0;
 let w;
 let xoff = 0;
 let waveInc = 0;
@@ -31,6 +33,7 @@ let cameraX, cameraY, cameraZ;
 
 function preload() {
   font = loadFont("OpenSans-Regular.ttf");
+  //airplaneNoisesInFlight = loadSound("propeller-plane-flying-steady-01.mp3");
   //lamaine = loadImage("wilison.jpg");
 }
 
@@ -57,9 +60,11 @@ function setup() {
 
 function draw() {
   background(200, 70, 100);
+
   updateCamera();
+
   //console.log(cameraX,cameraY,cameraZ);
-  translate(cameraX, cameraY, cameraZ);
+  translate(cameraX, cameraY, cameraZ + playerCtrlDistToCamera);
 
   skyBox.render();
 
@@ -97,7 +102,12 @@ function draw() {
     text("To reset the page press Ctrl + R", 0, 80);
     text("To look around the scene use your MOUSE buttons", 0, 120);
     text("Use R to switch into diffent point of views", 0, 160);
-    text("Press C to hide and show the controls", 0, 200);
+    text(
+      "Use the Brackets [" + playerCtrlDistToCamera + "] to tweak your POV",
+      0,
+      200
+    );
+    text("Press C to hide and show the controls", 0, 240);
     pop();
   }
 
@@ -222,25 +232,25 @@ function draw() {
 
     plane1.update();
 
+    //
+    push();
+    plane1.render();
+
+    // if(mouseIsPressed){
+    // plane1.mouseInput();}
+    //trail.run(plane.pos);
     if (!hidePlane) {
-      push();
-
-      plane1.render();
-
-      // if(mouseIsPressed){
-      // plane1.mouseInput();}
-      //trail.run(plane.pos);
-
       ps.addParticle(2);
       ps.run();
       ps1.addParticle(2);
       ps1.run();
-      pop();
     }
+    pop();
 
     ring.update(plane1);
     ring.render();
   } else if (planeHitWater == 1) {
+    //airplaneNoisesInFlight.pause();
     plane1.pos.y = -50;
 
     push();
@@ -275,6 +285,11 @@ function keyReleased() {
     showControls++;
   } else if (keyCode === 67) {
     showControls = 0;
+  }
+  if (keyCode === 219) {
+    playerCtrlDistToCamera -= 25;
+  } else if (keyCode === 221) {
+    playerCtrlDistToCamera += 25;
   }
 }
 
