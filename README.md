@@ -1,4 +1,4 @@
 # flightOfTheAirplane
-link: https://rawcdn.githack.com/BobEatsYourBurrito/flightOfTheAirplane/656856686072fdd12ae471f5f2773aa959747662/index.html
+link: https://rawcdn.githack.com/BobEatsYourBurrito/flightOfTheAirplane/10dd17fc8bdd9c1c5da394d25ef29f7cd0562f3c/index.html
 
 ideas: collision, obsticles, multipliers, menu, POVs, powerups with speed(change speed, FOV, limit time)
