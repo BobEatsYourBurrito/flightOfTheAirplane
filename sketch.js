@@ -19,6 +19,7 @@ let plane1,
   cameraMvntSpdX,
   cameraMvntSpdY,
   airplaneNoisesInFlight,
+  inGameMusic,
   playerCtrlDistToCamera = 0;
 let w;
 let xoff = 0;
@@ -33,6 +34,7 @@ let cameraX, cameraY, cameraZ;
 
 function preload() {
   font = loadFont("OpenSans-Regular.ttf");
+  inGameMusic = loadSound("music.mp3");
   //airplaneNoisesInFlight = loadSound("propeller-plane-flying-steady-01.mp3");
   //lamaine = loadImage("wilison.jpg");
 }
