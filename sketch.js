@@ -100,14 +100,14 @@ function draw() {
     text("WASD for normal movement", 0, 0);
     text("Q & E for Rotational Movement", 0, 40);
     text("To reset the page press Ctrl + R", 0, 80);
-    text("To look around the scene use your MOUSE buttons", 0, 120);
-    text("Use R to switch into diffent point of views", 0, 160);
+    //text("To look around the scene use your MOUSE buttons", 0, 120);
+    text("Use R to switch into diffent point of views", 0, 120);
     text(
       "Use the Brackets [" + playerCtrlDistToCamera + "] to tweak your POV",
       0,
-      200
+      160
     );
-    text("Press C to hide and show the controls", 0, 240);
+    text("Press C to hide and show the controls", 0, 200);
     pop();
   }
 
