@@ -55,7 +55,8 @@ class Ring {
       this.highScore = this.score;
       storeItem("this.highScore", this.highScore);
       plane1.highScoreColorScroll = 100;
-      plane1.customColor = 0;
+      plane1.customColor = 100;
+      plane1.isNotDark = 100;
     }
 
     if (this.hotStreak > this.recordHotStreak) {

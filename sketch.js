@@ -68,7 +68,7 @@ function setup() {
 function draw() {
   background(200, 70, 100);
 
-  w = 35 + boxOffset;
+  w = 40 + boxOffset;
 
   updateCamera();
 
@@ -96,10 +96,19 @@ function draw() {
   text(ring.recordHotStreak, 420, 75);
   pop();
 
+  push();
+  translate(-325, -height + height / 6.5, -1000);
+  textSize(50);
+  textFont(font);
+  fill(0);
+  text("Press Esc to pause the game.", 0, 0);
+  pop();
+
   //Instructions || controls
-  if (showControls == 1) {
+  if (pauseMenuActive === 1) {
     push();
-    translate(-width + 100, -height + height / 5, -1200);
+    translate(-width + 100, -height + height / 6, -1200);
+    // translate(-450, 20, plane1.pos.z - 400);
     textSize(50);
     textFont(font);
     fill(0);
@@ -117,8 +126,12 @@ function draw() {
       160
     );
     text("Use the Parenthesis (" + boxOffset + ") to lower detail", 0, 200);
-    text("use the Arrows <" + plane1.color + "> to change color", 0, 240);
-    text("Press C to hide and show the controls", 0, 280);
+    text(
+      "use the Arrows <" + floor(plane1.color) + "> to change color",
+      0,
+      240
+    );
+    // text("Press C to hide and show the controls", 0, 280);
     pop();
   }
 
@@ -209,10 +222,12 @@ function draw() {
     if (keyIsDown("68")) {
       plane1.acc.x += cameraMvntSpdX;
       plane1.bankAngleZ += 2.2;
+      //plane1.isReceivingInput += 1;
       usedRotation = 0;
     } else if (keyIsDown("65")) {
       plane1.acc.x -= cameraMvntSpdX;
       plane1.bankAngleZ -= 2.2;
+      //  plane1.isReceivingInput += 1;
       usedRotation = 0;
     }
     if (keyIsDown("83")) {
@@ -225,21 +240,27 @@ function draw() {
     if (keyIsDown("69")) {
       plane1.bankAngleZ += 2.5;
       usedRotation = 1;
+      plane1.isReceivingInput = 1;
     } else if (keyIsDown("81")) {
       plane1.bankAngleZ -= 2.5;
       usedRotation = 1;
-    }
-    if (
-      (plane1.bankAngleVelZ > 0 && usedRotation === 0) ||
-      (plane1.bankAngleVelZ < 0 && usedRotation === 0)
-    ) {
-      plane1.bankAngleVelZ *= 0.95;
+      plane1.isReceivingInput = 1;
     } else {
-      plane1.bankAngleVelZ *= 0.99;
+      plane1.isReceivingInput = 0;
     }
-    if (plane1.bankAngleVelX > 0 || plane1.bankAngleVelX < 0) {
-      plane1.bankAngleVelX *= 0.95;
-    }
+    console.log(plane1.isReceivingInput);
+    //if (plane1.bankAngleVelZ > 0 && plane1.bank)
+    // if (
+    //   (plane1.bankAngleVelZ > 0 && usedRotation === 0) ||
+    //   (plane1.bankAngleVelZ < 0 && usedRotation === 0)
+    // ) {
+    //   plane1.bankAngleVelZ *= 0.95;
+    // } else {
+    //   plane1.bankAngleVelZ *= 0.99;
+    // }
+    // if (plane1.bankAngleVelX > 0 || plane1.bankAngleVelX < 0) {
+    //   plane1.bankAngleVelX *= 0.95;
+    // }
 
     plane1.update();
 
@@ -265,7 +286,7 @@ function draw() {
     push();
     rotateX(radians(-cameraRotationsX / 2));
     rotateZ(radians(-cameraRotationsZ / 2));
-    translate(-450, 20, plane1.pos.z - 400);
+    translate(-450, constrain(plane1.pos.y, 0, 200), plane1.pos.z - 400);
     fill(360, 100, 0);
     textFont(font);
     textSize(150);
@@ -321,10 +342,35 @@ function keyReleased() {
   } else if (keyCode === 48) {
     boxOffset += 5;
   }
-  if (keyCode === 188 && plane1.color >= 5) {
-    plane1.color -= 5;
-  } else if (keyCode === 190 && plane1.color <= 95) {
-    plane1.color += 5;
+  if (
+    keyCode === 188 &&
+    plane1.color >= 0.4 &&
+    plane1.highScoreColorScroll === 0
+  ) {
+    plane1.color -= 10;
+    plane1.customColor = 100;
+    plane1.isNotDark = 100;
+  } else if (
+    keyCode === 188 &&
+    plane1.color <= 0 &&
+    plane1.highScoreColorScroll === 0
+  ) {
+    plane1.customColor = 0;
+  }
+  if (
+    keyCode === 190 &&
+    plane1.color <= 99.5 &&
+    plane1.highScoreColorScroll === 0
+  ) {
+    plane1.color += 10;
+    plane1.customColor = 100;
+    plane1.isNotDark = 100;
+  } else if (
+    keyCode === 190 &&
+    plane1.color >= 100 &&
+    plane1.highScoreColorScroll === 0
+  ) {
+    plane1.isNotDark = 0;
   }
   if (keyCode === 27 && pauseMenuActive === 0) {
     pauseMenuActive = 1;

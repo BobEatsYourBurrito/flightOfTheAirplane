@@ -13,7 +13,9 @@ class Plane {
     this.velDampening = 0.95;
     this.color = 0;
     this.highScoreColorScroll = 0;
-    this.customColor = 100;
+    this.customColor = 0;
+    this.isNotDark = 100;
+    this.isReceivingInput = 0;
   }
   update(origin) {
     this.vel.add(this.acc);
@@ -31,7 +33,11 @@ class Plane {
   }
   render() {
     stroke(0);
-    ambientMaterial(map(this.color, 0, 100, 0, 360), 100, 100);
+    ambientMaterial(
+      map(this.color, 0, 100, 0, 360),
+      this.customColor,
+      this.isNotDark
+    );
     let constrainedXPos = constrain(
       this.pos.x,
       -windowWidth / 4,
@@ -64,10 +70,47 @@ class Plane {
       vertex(0, 0, 50);
       endShape();
     }
-    if (this.color <= 100 && ring.highScoreColorScroll === 100) {
+    if (plane1.highScoreColorScroll === 100) {
       this.color += 0.5;
-    } else if (this.color >= 101 && ring.highScoreColorScroll === 100) {
+    }
+    if (this.color >= 100 && plane1.highScoreColorScroll === 100) {
       this.color = 0;
     }
+
+    if (
+      (this.bankAngleVelZ > 0 &&
+        this.bankAngleVelZ < 180 &&
+        this.isReceivingInput === 0) ||
+      (this.bankAngleVelZ < 0 &&
+        this.bankAngleVelZ > -180 &&
+        this.isReceivingInput === 0)
+    ) {
+      this.bankAngleVelZ *= 0.95;
+    } else if (this.bankAngleVelZ > 180 || this.bankAngleVelZ < -180) {
+      this.bankAngleVelZ /= 0.99;
+    }
+    if (this.bankAngleVelZ > 359.9 || this.bankAngleVelZ < -359.9) {
+      this.bankAngleVelZ = 0;
+    }
+    if (this.bankAngleVelX > 0 || this.bankAngleVelX < 0) {
+      this.bankAngleVelX *= 0.965;
+    }
+
+    // if (keyIsDown("69") || keyIsDown("81")) {
+    //   this.isReceivingInput = 1;
+    // } else {
+    //   this.isReceivingInput = 0;
+    // }
+    // if (
+    //   (plane1.bankAngleVelZ > 0 && usedRotation === 0) ||
+    //   (plane1.bankAngleVelZ < 0 && usedRotation === 0)
+    // ) {
+    //   plane1.bankAngleVelZ *= 0.95;
+    // } else {
+    //   plane1.bankAngleVelZ *= 0.99;
+    // }
+    // if (plane1.bankAngleVelX > 0 || plane1.bankAngleVelX < 0) {
+    //   plane1.bankAngleVelX *= 0.95;
+    // }
   }
 }
