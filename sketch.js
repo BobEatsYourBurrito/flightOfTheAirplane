@@ -20,7 +20,9 @@ let plane1,
   cameraMvntSpdY,
   airplaneNoisesInFlight,
   inGameMusic,
-  playerCtrlDistToCamera = 0;
+  playerCtrlDistToCamera = 0,
+  boxOffset = 0,
+  pauseMenuActive = 0;
 let w;
 let xoff = 0;
 let waveInc = 0;
@@ -34,7 +36,7 @@ let cameraX, cameraY, cameraZ;
 
 function preload() {
   font = loadFont("OpenSans-Regular.ttf");
-  inGameMusic = loadSound("music.mp3");
+  //inGameMusic = loadSound("music.m4a");
   //airplaneNoisesInFlight = loadSound("propeller-plane-flying-steady-01.mp3");
   //lamaine = loadImage("wilison.jpg");
 }
@@ -51,17 +53,22 @@ function setup() {
   ps = new ParticleSystem(origin);
   origin.x += 40;
   ps1 = new ParticleSystem(origin);
-  w = 35;
   ring = new Ring();
   waveWidth = 500;
   skyBox = new SkyBox(3000);
   noiseDetail(8);
 
   callCameraSetup();
+  userStartAudio();
+  //let music = new p5.SoundLoop(airplaneNoisesInFlight);
+  //music.start();
+  frameRate(60);
 }
 
 function draw() {
   background(200, 70, 100);
+
+  w = 35 + boxOffset;
 
   updateCamera();
 
@@ -92,7 +99,7 @@ function draw() {
   //Instructions || controls
   if (showControls == 1) {
     push();
-    translate(-width + 50, -height + height / 5, -1400);
+    translate(-width + 100, -height + height / 5, -1200);
     textSize(50);
     textFont(font);
     fill(0);
@@ -109,7 +116,9 @@ function draw() {
       0,
       160
     );
-    text("Press C to hide and show the controls", 0, 200);
+    text("Use the Parenthesis (" + boxOffset + ") to lower detail", 0, 200);
+    text("use the Arrows <" + plane1.color + "> to change color", 0, 240);
+    text("Press C to hide and show the controls", 0, 280);
     pop();
   }
 
@@ -152,10 +161,10 @@ function draw() {
 
   rotateY(radians(-cameraRotationsZ * 0.006));
 
-  for (let z = waveDistance + 200; z > waveDistance - 700; z -= 35) {
+  for (let z = waveDistance + 200; z > waveDistance - 700; z -= w) {
     let waveStrength = map(z, 200, -500, 2, 3);
 
-    for (let x = -waveWidth; x < waveWidth; x += 35) {
+    for (let x = -waveWidth; x < waveWidth; x += w) {
       push();
       let d = dist(map(noise(waveInc), -1, 1, -150, 150), 350, x, z);
       let maxH = map(d, 0, 300, 100, 120);
@@ -193,7 +202,7 @@ function draw() {
     planeHitWater = 1;
   }
 
-  if (planeHitWater === 0) {
+  if (planeHitWater === 0 && pauseMenuActive === 0) {
     xoff += 0.05;
     waveInc += 0.001;
 
@@ -251,7 +260,20 @@ function draw() {
 
     ring.update(plane1);
     ring.render();
-  } else if (planeHitWater == 1) {
+  } else if (pauseMenuActive === 1) {
+    //rotateX(radians(-this.bankAngleVelX));
+    push();
+    rotateX(radians(-cameraRotationsX / 2));
+    rotateZ(radians(-cameraRotationsZ / 2));
+    translate(-450, 20, plane1.pos.z - 400);
+    fill(360, 100, 0);
+    textFont(font);
+    textSize(150);
+    text("Game Paused", 0, 0);
+    pop();
+
+    plane1.render();
+  } else if (planeHitWater === 1) {
     //airplaneNoisesInFlight.pause();
     plane1.pos.y = -50;
 
@@ -275,6 +297,7 @@ function draw() {
       ring.score = 0;
       planeHitWater -= 1;
       plane1.highScoreColorScroll = 0;
+      plane1.customColor = 100;
     }
   }
 }
@@ -292,6 +315,24 @@ function keyReleased() {
     playerCtrlDistToCamera -= 25;
   } else if (keyCode === 221) {
     playerCtrlDistToCamera += 25;
+  }
+  if (keyCode === 57) {
+    boxOffset -= 5;
+  } else if (keyCode === 48) {
+    boxOffset += 5;
+  }
+  if (keyCode === 188 && plane1.color >= 5) {
+    plane1.color -= 5;
+  } else if (keyCode === 190 && plane1.color <= 95) {
+    plane1.color += 5;
+  }
+  if (keyCode === 27 && pauseMenuActive === 0) {
+    pauseMenuActive = 1;
+  } else if (keyCode === 27 && pauseMenuActive === 1) {
+    plane1.vel.mult(0);
+    plane1.update();
+    plane1.render();
+    pauseMenuActive = 0;
   }
 }
 

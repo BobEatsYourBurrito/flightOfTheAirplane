@@ -22,7 +22,7 @@ class Ring {
     if (this.pos.z > 600) {
       this.pos = createVector(
         random(-this.randomX, this.randomX),
-        random(-75, -200),
+        random(-100, -200),
         -1500
       );
       if (this.pointCheck == 0) {
@@ -55,6 +55,7 @@ class Ring {
       this.highScore = this.score;
       storeItem("this.highScore", this.highScore);
       plane1.highScoreColorScroll = 100;
+      plane1.customColor = 0;
     }
 
     if (this.hotStreak > this.recordHotStreak) {

@@ -11,8 +11,9 @@ class Plane {
     this.bankAngleX = 0;
     this.propSpeed = 0;
     this.velDampening = 0.95;
-    let color = 0;
+    this.color = 0;
     this.highScoreColorScroll = 0;
+    this.customColor = 100;
   }
   update(origin) {
     this.vel.add(this.acc);
@@ -30,7 +31,7 @@ class Plane {
   }
   render() {
     stroke(0);
-    ambientMaterial(map(color, 0, 100, 0, 360), this.highScoreColorScroll, 100);
+    ambientMaterial(map(this.color, 0, 100, 0, 360), 100, 100);
     let constrainedXPos = constrain(
       this.pos.x,
       -windowWidth / 4,
@@ -38,7 +39,7 @@ class Plane {
     );
     let constrainedYPos = constrain(
       this.pos.y,
-      -windowHeight / 4,
+      -windowHeight / 3,
       windowHeight / 2
     );
     translate(constrainedXPos, constrainedYPos, this.pos.z);
@@ -63,10 +64,10 @@ class Plane {
       vertex(0, 0, 50);
       endShape();
     }
-    if (color <= 100) {
-      color += 0.5;
-    } else {
-      color = 0;
+    if (this.color <= 100 && ring.highScoreColorScroll === 100) {
+      this.color += 0.5;
+    } else if (this.color >= 101 && ring.highScoreColorScroll === 100) {
+      this.color = 0;
     }
   }
 }
