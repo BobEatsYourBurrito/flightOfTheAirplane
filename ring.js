@@ -18,7 +18,8 @@ class Ring {
   }
   update(plane) {
     this.pos.add(this.vel);
-    this.vel.limit(12);
+    this.vel.limit(20);
+    //this.acc += 0.002;
     if (this.pos.z > 600) {
       this.pos = createVector(
         random(-this.randomX, this.randomX),
@@ -27,30 +28,31 @@ class Ring {
       );
       if (this.pointCheck == 0) {
         this.hotStreak = 0;
-      } else if (this.pointCheck == 1) {
+      } else if (this.pointCheck >= 1) {
         this.pointCheck = 0;
-        this.acc += 0.05;
+	this.acc += 0.1;
         this.vel.z += this.acc;
       }
     }
 
     //difference between ring center and plane1 one x and y axis
     let distInX = sqrt(
-      (this.pos.x - plane1.pos.x) * (this.pos.x - plane1.pos.x)
+      (this.pos.x * this.pos.x) - (plane1.pos.x * plane1.pos.x)
     );
     let distInY = sqrt(
-      (this.pos.y - plane1.pos.y) * (this.pos.y - plane1.pos.y)
+      (this.pos.y * this.pos.y) - (plane1.pos.y * plane1.pos.y)
     );
     let distInZ = sqrt(
-      (this.pos.z - plane1.pos.z) * (this.pos.z - plane1.pos.z)
+      (this.pos.z * this.pos.z) - (plane1.pos.z * plane1.pos.z)
     );
 
     // console.log(distInX, distInY, distInZ);
-    if (distInY < 45 && distInX < 45 && distInZ < 5 && this.pointCheck === 0) {
-      this.score++;
-      this.hotStreak += 1;
-      this.pointCheck++;
+    if (distInY < 47 && distInX < 47 && distInZ < 2 && this.pointCheck < 1) {
+      this.score      += 1;
+      this.hotStreak  += 1;
+      this.pointCheck += 1;
     }
+	console.log(this.pointCheck);
     if (this.score > this.highScore) {
       this.highScore = this.score;
       storeItem("this.highScore", this.highScore);
