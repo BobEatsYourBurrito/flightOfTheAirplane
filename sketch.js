@@ -22,7 +22,13 @@ let plane1,
   inGameMusic,
   playerCtrlDistToCamera = 0,
   boxOffset = 0,
-  pauseMenuActive = 0;
+  pauseMenuActive = 0,
+  invertControls = 1,
+  scoreDist = 600,
+  speedBoost = 0,
+  toggleFrameRate = false,
+  sunDial = 270,
+  sunDial180 = 0;
 let w;
 let xoff = 0;
 let waveInc = 0;
@@ -44,6 +50,7 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   colorMode(HSB, 360, 100, 100, 255);
+  sunDial180 = sunDial + 180;
   plane1 = new Plane();
   //spawn = createVector(0,100,100);
   origin = plane1.pos.copy();
@@ -54,7 +61,7 @@ function setup() {
   origin.x += 40;
   ps1 = new ParticleSystem(origin);
   ring = new Ring();
-  waveWidth = 500;
+  waveWidth = 700;
   skyBox = new SkyBox(3000);
   noiseDetail(8);
 
@@ -68,13 +75,19 @@ function setup() {
 function draw() {
   background(200, 70, 100);
 
-  w = 40 + boxOffset;
-
+  w = 65 + boxOffset;
+  if(hotStreak > 0){
+    speedBoost = hotStreak / 500;
+    constrain(speedBoost, 0, 0.2);
+  }else if(hotStreak === 0) {speedBoost = 0}
+    //console.log(speedBoost);
+  let waveSpeed = 0.05 + speedBoost;
   updateCamera();
 
   //console.log(cameraX,cameraY,cameraZ);
   translate(cameraX, cameraY, cameraZ + playerCtrlDistToCamera);
-
+  
+  //skyBox.timeChange();
   skyBox.render();
 
   //pointLight(60,100,100, 0,300, -800);
@@ -83,31 +96,44 @@ function draw() {
   rotateX(radians(cameraRotationsX));
   rotateZ(radians(cameraRotationsZ));
 
-  //HighScore counter
   push();
-  textSize(40);
-  textFont(font);
-  fill(0, 100, 0);
-  translate(width / 2 - 300, -height + height / 2.5, -1000);
-  text("Your HighScore and HotScore", 0, 0);
-  textSize(60);
-  fill(180, 100, 100);
-  text(ring.highScore, 175, 75);
-  text(ring.recordHotStreak, 420, 75);
-  pop();
-
-  push();
-  translate(-325, -height + height / 6.5, -1000);
+  translate(width / 1.5 -325, -height / 1.5, -1000);
   textSize(50);
   textFont(font);
   fill(0);
   text("Press Esc to pause the game.", 0, 0);
   pop();
+  
+
 
   //Instructions || controls
   if (pauseMenuActive === 1) {
-    push();
-    translate(-width + 100, -height + height / 6, -1200);
+  
+  push();
+  textSize(50);
+  textFont(font);
+  fill(0);
+  translate(-width + 100, 200, -1200);
+  //text(skyBox.color0 + skyBox.color1 + floor(sunDial), 0, 0);
+  pop();
+
+  scoreDist = -1500;
+  //HighScore counter
+  push();
+  textSize(40);
+  textFont(font);
+  fill(0, 100, 0);
+  translate(-width + 100, -height / 3, -1200);
+  text("Your HighScore and HotScore", 0, 0);
+  textSize(60);
+  fill(180, 100, 100);
+  text(ring.highScore, 175, 75);
+  text(ring.recordHotStreak, 420, 75);
+  rotateY(radians(45));
+  pop();
+
+  push();
+    translate(-width + 100, -height /1.25, -1200);
     // translate(-450, 20, plane1.pos.z - 400);
     textSize(50);
     textFont(font);
@@ -125,26 +151,42 @@ function draw() {
       0,
       160
     );
-    text("Use the Parenthesis (" + boxOffset + ") to lower detail", 0, 200);
+    text("Use the Parenthesis (" + boxOffset + ") to change wave detail", 0, 200);
     text(
       "use the Arrows <" + floor(plane1.color) + "> to change color",
       0,
       240
     );
-    // text("Press C to hide and show the controls", 0, 280);
+    text("Press F to invert controls",0,280);
+    text("Press O to hide and show the FPS", 0, 320);
+    rotateY(radians(45));
+    pop();
+  } else {scoreDist = -600}
+
+  //FramerateShow()
+  if(toggleFrameRate === true) {
+    push();
+    translate(scoreDist, -100, -1000);
+    textSize(50);
+    fill(0);
+    let currentFrameRate = floor(frameRate());
+    textFont(font);
+    text("Fps > ", 0, 0);
+    translate(325 , 0, 0);
+    text(currentFrameRate,0,0);
     pop();
   }
 
   //point Counter
   push();
-  translate(200, 0, -1000);
+  translate(scoreDist, -25, -1000);
   textSize(50);
   textFont(font);
   fill(0);
   score = ring.score;
-  text(score, 0, 0);
-  translate(-50, -100, 0);
-  text("Score", 0, 0);
+  text("Score > ", 0, 0);
+  translate(325, 0, 0);
+  text("" + score,0 ,0);
   pop();
 
   //hotStreakCounter
@@ -152,21 +194,25 @@ function draw() {
   textSize(50);
   textFont(font);
   fill(0);
-  translate(-400, -100, -1000);
-  text("HotStreaks", 0, 0);
+  translate(scoreDist, 50, -1000);
   hotStreak = ring.hotStreak;
-  translate(150, 100, 0);
-  text(hotStreak, 0, 0);
+  text("Hot Streak > ", 0, 0);
+  translate(325 ,0 ,0);
+  text("" + hotStreak, 0, 0);
   pop();
 
   //orbitControl();
 
   push();
   noStroke();
-  ambientMaterial(40, 40, 100);
+  ambientMaterial(40, 60, 100);
   //texture(lamaine);
-  translate(0, 0, -1200);
+  rotateX(radians(-sunDial));
+  translate(0, -1200, 0);
   sphere(200);
+  ambientMaterial(0, 0, 100);
+  translate(0,2400,0);
+  sphere(100);
   //plane(500, 900);
   pop();
 
@@ -174,7 +220,16 @@ function draw() {
 
   rotateY(radians(-cameraRotationsZ * 0.006));
 
-  for (let z = waveDistance + 200; z > waveDistance - 700; z -= w) {
+  push();
+  ambientMaterial(40, 100, 100);
+  translate(-waveWidth - 300, 225, -300);
+  //box(600,50,1000);
+  translate(waveWidth * 3 + 100, 0, 0);
+  //box(600,50,1000);
+  pop();
+
+
+  for (let z = waveDistance + 200; z > waveDistance - 900; z -= w) {
     let waveStrength = map(z, 200, -500, 2, 3);
 
     for (let x = -waveWidth; x < waveWidth; x += w) {
@@ -216,7 +271,7 @@ function draw() {
   }
 
   if (planeHitWater === 0 && pauseMenuActive === 0) {
-    xoff += 0.05;
+    xoff += waveSpeed;
     waveInc += 0.001;
 
     if (keyIsDown("68")) {
@@ -230,12 +285,13 @@ function draw() {
       //  plane1.isReceivingInput += 1;
       usedRotation = 0;
     }
+
     if (keyIsDown("83")) {
-      plane1.acc.y -= cameraMvntSpdY;
-      plane1.bankAngleX -= 1.7;
+      plane1.acc.y -= cameraMvntSpdY * invertControls;
+      plane1.bankAngleX -= 1.7 * invertControls;
     } else if (keyIsDown("87")) {
-      plane1.acc.y += cameraMvntSpdY;
-      plane1.bankAngleX += 1.7;
+      plane1.acc.y += cameraMvntSpdY * invertControls;
+      plane1.bankAngleX += 1.7 * invertControls;
     }
     if (keyIsDown("69")) {
       plane1.bankAngleZ += 2.5;
@@ -248,7 +304,7 @@ function draw() {
     } else {
       plane1.isReceivingInput = 0;
     }
-    console.log(plane1.isReceivingInput);
+    //console.log(plane1.isReceivingInput);
     //if (plane1.bankAngleVelZ > 0 && plane1.bank)
     // if (
     //   (plane1.bankAngleVelZ > 0 && usedRotation === 0) ||
@@ -324,6 +380,16 @@ function draw() {
 }
 
 function keyReleased() {
+  if(keyCode === 79 && !toggleFrameRate){
+	toggleFrameRate = true;
+  } else if(keyCode === 79){toggleFrameRate = false}
+
+  if(keyCode === 70 && invertControls === 1) {
+    invertControls = -1;
+  } else if(keyCode === 70) {
+    invertControls = 1;
+  }
+
   if (keyCode === 82) {
     povPosition++;
   }

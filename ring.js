@@ -18,18 +18,22 @@ class Ring {
   }
   update(plane) {
     this.pos.add(this.vel);
-    this.vel.limit(12);
+    this.vel.limit(15);
+
+    let accelarationSpeed = 0.1 + speedBoost;
+
+    //this.acc += 0.002;
     if (this.pos.z > 600) {
       this.pos = createVector(
         random(-this.randomX, this.randomX),
         random(-100, -200),
         -1500
       );
-      if (this.pointCheck == 0) {
+      if (this.pointCheck === 0) {
         this.hotStreak = 0;
-      } else if (this.pointCheck == 1) {
+      } else if (this.pointCheck >= 1) {
         this.pointCheck = 0;
-        this.acc += 0.05;
+	this.acc += accelarationSpeed;
         this.vel.z += this.acc;
       }
     }
@@ -45,12 +49,14 @@ class Ring {
       (this.pos.z - plane1.pos.z) * (this.pos.z - plane1.pos.z)
     );
 
-    // console.log(distInX, distInY, distInZ);
-    if (distInY < 45 && distInX < 45 && distInZ < 5 && this.pointCheck === 0) {
-      this.score++;
-      this.hotStreak += 1;
-      this.pointCheck++;
+    //console.log(distInX, distInY, distInZ);
+    if (distInY < 47 && distInX < 47 && distInZ < 8 && this.pointCheck < 1) {
+      this.score      += 1;
+      this.hotStreak  += 1;
+      this.pointCheck = 1;
+      console.log(this.pointCheck);
     }
+	
     if (this.score > this.highScore) {
       this.highScore = this.score;
       storeItem("this.highScore", this.highScore);
@@ -69,8 +75,8 @@ class Ring {
     push();
     noStroke();
     translate(this.pos);
-    //ambientMaterial(180, 100, 70);
-    fill(180, 100, 80);
+    ambientMaterial(0, 100, 95);
+    //fill(0, 100, 95);
     torus(50, 10);
     pop();
   }
