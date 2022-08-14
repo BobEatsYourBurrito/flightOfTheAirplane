@@ -113,7 +113,7 @@ function draw() {
   textSize(50);
   textFont(font);
   fill(0);
-  translate(-width + 100, 200, -1200);
+  translate(-width + 100, 200, -1000);
   //text(skyBox.color0 + skyBox.color1 + floor(sunDial), 0, 0);
   pop();
 
@@ -123,8 +123,8 @@ function draw() {
   textSize(40);
   textFont(font);
   fill(0, 100, 0);
-  translate(-width + 100, -height / 3, -1200);
-  text("Your HighScore and HotScore", 0, 0);
+  translate(scoreDist, -250, -1000);
+  text("Your High Score and Heat Streak", 0, 0);
   textSize(60);
   fill(180, 100, 100);
   text(ring.highScore, 175, 75);
@@ -133,7 +133,7 @@ function draw() {
   pop();
 
   push();
-    translate(-width + 100, -height /1.25, -1200);
+    translate(scoreDist, -700, -1000);
     // translate(-450, 20, plane1.pos.z - 400);
     textSize(50);
     textFont(font);
@@ -141,24 +141,24 @@ function draw() {
     text("Controls:", 0, 0);
     textSize(40);
     translate(0, 50, 0);
-    text("WASD for normal movement", 0, 0);
+    text("WASD for normal movement", 0, 0); 
     text("Q & E for Rotational Movement", 0, 40);
-    text("To reset the page press Ctrl + R", 0, 80);
     //text("To look around the scene use your MOUSE buttons", 0, 120);
-    text("Use R to switch into diffent point of views", 0, 120);
+    text("Use R to switch into diffent point of views", 0, 80);
     text(
       "Use the Brackets [" + playerCtrlDistToCamera + "] to tweak your POV",
       0,
-      160
+      120
     );
-    text("Use the Parenthesis (" + boxOffset + ") to change wave detail", 0, 200);
+    text("Use the Parenthesis (" + boxOffset + ") to change wave detail", 0, 160);
     text(
       "use the Arrows <" + floor(plane1.color) + "> to change color",
       0,
-      240
+      200
     );
-    text("Press F to invert controls",0,280);
-    text("Press O to hide and show the FPS", 0, 320);
+    text("Press F to invert controls",0,240);
+    text("Press O to hide and show the FPS", 0, 280);
+    text("To reset the page press Ctrl + R", 0, 320);
     rotateY(radians(45));
     pop();
   } else {scoreDist = -600}

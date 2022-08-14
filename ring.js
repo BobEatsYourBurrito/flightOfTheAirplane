@@ -54,7 +54,7 @@ class Ring {
       this.score      += 1;
       this.hotStreak  += 1;
       this.pointCheck = 1;
-      console.log(this.pointCheck);
+      //console.log(this.pointCheck);
     }
 	
     if (this.score > this.highScore) {
