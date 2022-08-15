@@ -69,12 +69,11 @@ function setup() {
   userStartAudio();
   //let music = new p5.SoundLoop(airplaneNoisesInFlight);
   //music.start();
-  frameRate(60);
 }
 
 function draw() {
   background(200, 70, 100);
-
+  frameRate(60);
   w = 65 + boxOffset;
   if(hotStreak > 0){
     speedBoost = hotStreak / 500;
