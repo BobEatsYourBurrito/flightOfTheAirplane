@@ -91,6 +91,7 @@ class Plane {
     }
     if (this.bankAngleVelZ > 359.9 || this.bankAngleVelZ < -359.9) {
       this.bankAngleVelZ = 0;
+      this.vel.mult(2.5);
     }
     if (this.bankAngleVelX > 0 || this.bankAngleVelX < 0) {
       this.bankAngleVelX *= 0.965;
